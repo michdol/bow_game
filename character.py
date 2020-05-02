@@ -59,5 +59,4 @@ class Character(Sprite):
 	def draw_mouse(self):
 		mouse_pos = mouse.get_pos()
 		pos = (self.rect.x, self.rect.y)
-		print(mouse_pos, pos)
 		draw.line(self.screen, self.color, pos, mouse_pos, 5)		

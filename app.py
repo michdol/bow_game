@@ -76,6 +76,7 @@ class App(object):
 		for arrow in self.arrows:
 			arrow.set_center()
 			arrow.update()
+		self.arrows = [arrow for arrow in self.arrows if not arrow.stopped]
 
 	def on_render(self):
 		self.screen.fill(GREEN)

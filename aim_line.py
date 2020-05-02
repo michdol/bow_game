@@ -21,13 +21,13 @@ class AimLine(Sprite):
 		if mouse_keys[0]:
 			mouse_pos = mouse.get_pos()
 			draw.line(self.screen, self.color, start, mouse_pos, 5)
-			self.text(*start)
-			self.text(*mouse_pos)
+			#self.text(*start, "click")
+			#self.text(*mouse_pos, "release")
 			self.angle(start, mouse_pos)
 
-	def text(self, x, y):
+	def text(self, x, y, add):
 		font_ = font.Font('freesansbold.ttf', 32) 
-		text_ = "({}, {})".format(x, y)
+		text_ = "({}, {}) {}".format(x, y, add)
 		text = font_.render(text_, True, green, blue) 
 		rect = text.get_rect()
 		rect.x = x + 50

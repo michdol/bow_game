@@ -1,4 +1,4 @@
-from math import atan2, degrees, sqrt, sin, cos
+from math import degrees, sqrt, sin, cos, tan, radians
 from pygame import Surface, draw, mouse
 from pygame.sprite import Sprite
 
@@ -23,6 +23,8 @@ class Arrow(Sprite):
 		self.release_position = None
 		self.angle = None
 		self.t = 0
+		self.is_moving_right = False
+		self.stopped = False
 
 	def set_center(self):
 		if self.released:
@@ -37,39 +39,43 @@ class Arrow(Sprite):
 		self.released = True
 		click_x, click_y = self.click_position
 		self.release_position = release_x, release_y = release_position
+		if release_x < click_x:
+			self.is_moving_right = True
 		# Those names might be fucked up
 		adjacent = abs(release_x -  click_x)
 		opposite = abs(release_y -  click_y)
-		print(adjacent, opposite)
-		#print(adjacent, opposite)
-		# Get the angle
 		self.angle = self.get_release_angle(adjacent, opposite)
-		if click_y > release_y:
-			self.angle = -self.angle
-		print("angle", self.angle)
-		#print("Angle ", self.angle)
-		# Get line's length
+		aiming_down = release_y < click_y
+		if self.is_moving_right:
+			if aiming_down:
+				self.angle += radians(90 * 3)
+		else:
+			if aiming_down:
+				self.angle += radians(90 * 2)
+		#print(self.angle, adjacent, opposite)
 		length = self.get_line_length(adjacent, opposite)
-		#print("Lenght", length)
-		if not self.release_speed:
-			self.release_speed = self.get_release_speed(length)
+		self.release_speed = self.get_release_speed(length)
+		print("\nrelease\n\n\n\n")
 
 	def update(self):
-		if self.rect.y >= FLOOR_Y or not self.released:
+		if self.rect.y >= FLOOR_Y:
+			self.stopped = True
+		if not self.released:
 			return
-		angle = 45
-		speed = 4
+		speed = self.release_speed
+		t = self.t
 		g = 0.980
 
-		vx = cos(self.angle) * speed
-		vy = -sin(self.angle) * speed + g * self.t
-		if self.rect.y < 10:
-			vy = +sin(angle) * speed + (0.5 * g * self.t * self.t)
-		self.rect.x += vx
+		vx = speed
+		vy = -sin(self.angle) * speed + 0.5 * g * t * t
+		print("angle {} -sin(angle) {:0<25} 0.5 * g * t * t {:0<25}".format(self.angle, -sin(self.angle), 0.5*g*t*t))
+
+		if self.is_moving_right:
+			self.rect.x += vx
+		else:
+			self.rect.x -= vx
 		self.rect.y += vy
 		self.t += 0.1
-		#print(self.rect.center)
-		#print(self.t)
 
 	def get_release_speed(self, length):
 		if length > 100:
@@ -78,11 +84,12 @@ class Arrow(Sprite):
 		return ARROW_MAX_SPEED * (length / 100)
 
 	def get_release_angle(self, adjacent, opposite):
-		if adjacent == 0:
-			adjacent = 90
-		tangent = atan2(opposite, adjacent)
-		#print("tang", tangent)
-		return -degrees(tangent)
+		tangent = tan(opposite / adjacent)
+		print(adjacent, opposite)
+		print(tangent)
+		angle = degrees(tangent)
+		print(angle)
+		return tangent
 
 	def get_line_length(self, adjacent, opposite):
 		return sqrt(adjacent ** 2 + opposite ** 2)
