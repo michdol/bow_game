@@ -44,6 +44,7 @@ class App(object):
 		self.click_position = None
 		self.current_arrow = None
 		self.arrows = []
+		self.t = 0
 
 	def on_event(self, event):
 		mouse = pygame.mouse.get_pressed()
@@ -74,6 +75,7 @@ class App(object):
 			self.character.perform_jump()
 		for arrow in self.arrows:
 			arrow.set_center()
+			arrow.update()
 
 	def on_render(self):
 		self.screen.fill(GREEN)
@@ -109,3 +111,8 @@ class App(object):
 if __name__ == "__main__":
 	theApp = App()
 	theApp.on_execute()
+
+
+# https://stackoverflow.com/questions/44465783/how-to-make-arrow-shoot-in-direction-of-mouse
+
+# https://www.raywenderlich.com/2795-beginning-game-programming-for-teens-with-python#toc-anchor-008
