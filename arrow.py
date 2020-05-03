@@ -34,6 +34,9 @@ class Arrow(Sprite):
     self.rect.x = x
     self.rect.y = y
 
+  def get_center(self):
+    return self.rect.center
+
   def update(self):
     if self.rect.y >= FLOOR_Y:
       self.stopped = True

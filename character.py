@@ -1,3 +1,4 @@
+from math import sin, radians
 from pygame import Surface, draw, mouse
 from pygame.sprite import Sprite
 
@@ -26,6 +27,7 @@ class Character(Sprite):
     self.is_jumping = False
     self.jumpCnt = CHARACTER_JUMP_FRAMES
     self.screen = screen
+    self.t = 0
 
   def get_center(self):
     return self.rect.center
@@ -44,13 +46,17 @@ class Character(Sprite):
       self.is_jumping = True
 
   def perform_jump(self):
-    if self.jumpCnt >= -CHARACTER_JUMP_FRAMES:
-      self.rect.y -= (self.jumpCnt * abs(self.jumpCnt)) * 0.5
-      self.jumpCnt -= 1
-    else:
-      self.jumpCnt = CHARACTER_JUMP_FRAMES
-      self.draw_character_on_the_floor()
-      self.is_jumping = False
+    if self.is_jumping:
+      t = self.t
+      g = 0.980
+      speed = 5
+      vy = -sin(radians(75)) * speed + 0.5 * g * t * t
+      self.rect.y += vy
+      self.t += 0.1
+      if self.rect.y >= FLOOR_Y - 0.5 * CHARACTER_HEIGHT:
+        self.is_jumping = False
+        self.draw_character_on_the_floor()
+        self.t = 0
 
   def draw_character_on_the_floor(self):
     self.rect.y = FLOOR_Y - CHARACTER_HEIGHT

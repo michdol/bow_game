@@ -1,9 +1,9 @@
 import pygame
 from pygame.locals import *
 
+from aim_line import AimLine
 from arrow import Arrow
 from character import Character
-from aim_line import AimLine
 from constants import (
   FLOOR_Y,
   CHARACTER_WIDTH,
@@ -17,6 +17,7 @@ from colors import (
   GREEN,
   RED,
 )
+from enemy import Enemy
 
 
 class App(object):
@@ -41,7 +42,8 @@ class App(object):
     self.click_position = None
     self.current_arrow = None
     self.arrows = []
-    self.t = 0
+    self.enemies = []
+    self.enemy_create_counter = 0
 
   def on_event(self, event):
     mouse = pygame.mouse.get_pressed()
@@ -74,6 +76,10 @@ class App(object):
       arrow.set_center()
       arrow.update()
     self.arrows = [arrow for arrow in self.arrows if not arrow.stopped]
+    self.create_enemy()
+    for enemy in self.enemies:
+      enemy.update()
+    # self.enemies = [enemy for enemy in self.enemies if not enemy.delete]
 
   def on_render(self):
     self.screen.fill(GREEN)
@@ -88,7 +94,7 @@ class App(object):
     pygame.quit()
 
   def on_execute(self):
-    if self.on_init() == False:
+    if self.on_init() is False:
       self._running = False
 
     while self._running:
@@ -104,6 +110,14 @@ class App(object):
     self.current_arrow = arrow
     self.arrows.append(arrow)
     return arrow
+
+  def create_enemy(self):
+    self.enemy_create_counter += 1
+    if self.enemy_create_counter == 120:
+      enemy = Enemy(BLUE, self.screen, self.arrows, self.all_sprites)
+      self.enemies.append(enemy)
+      self.enemy_create_counter = 0
+      self.all_sprites.add(enemy)
 
 
 if __name__ == "__main__":
