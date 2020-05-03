@@ -1,0 +1,2 @@
+Radian = float
+Degree = float
