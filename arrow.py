@@ -101,3 +101,6 @@ class Arrow(Sprite):
       return ARROW_MAX_SPEED
     # Ex.: 80 / 100 = 80% * ARROW_MAX_SPEED
     return ARROW_MAX_SPEED * (length / 100)
+
+  def hit(self):
+    self.stopped = True

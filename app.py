@@ -79,7 +79,7 @@ class App(object):
     self.create_enemy()
     for enemy in self.enemies:
       enemy.update()
-    # self.enemies = [enemy for enemy in self.enemies if not enemy.delete]
+    self.enemies = [enemy for enemy in self.enemies if not enemy.delete]
 
   def on_render(self):
     self.screen.fill(GREEN)
@@ -114,7 +114,7 @@ class App(object):
   def create_enemy(self):
     self.enemy_create_counter += 1
     if self.enemy_create_counter == 120:
-      enemy = Enemy(BLUE, self.screen, self.arrows, self.all_sprites)
+      enemy = Enemy(BLUE, self.screen, self, self.all_sprites)
       self.enemies.append(enemy)
       self.enemy_create_counter = 0
       self.all_sprites.add(enemy)
