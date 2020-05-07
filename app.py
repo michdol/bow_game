@@ -5,6 +5,7 @@ from aim_line import AimLine
 from arrow import Arrow
 from character import Character
 from constants import (
+  FPS,
   FLOOR_Y,
   CHARACTER_WIDTH,
   CHARACTER_HEIGHT,
@@ -54,6 +55,9 @@ class App(object):
         self._running = False
       elif event.key == K_SPACE:
         self.character.jump()
+    elif event.type == pygame.KEYUP:
+      if event.key in {pygame.K_d, pygame.K_a}:
+        self.character.stop()
     elif event.type == pygame.MOUSEBUTTONDOWN:
       if mouse[0]:
         self.click_position = event.pos
@@ -80,6 +84,8 @@ class App(object):
     for enemy in self.enemies:
       enemy.update()
     self.enemies = [enemy for enemy in self.enemies if not enemy.delete]
+    self.character.run_animation()
+    self.character.set_facing_direction()
 
   def on_render(self):
     self.screen.fill(GREEN)
@@ -102,7 +108,7 @@ class App(object):
         self.on_event(event)
       self.on_loop()
       self.on_render()
-      self.clock.tick(60)
+      self.clock.tick(FPS)
     self.on_cleanup()
 
   def create_arrow(self, click_position):
